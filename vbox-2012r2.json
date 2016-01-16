@@ -14,10 +14,10 @@
     "winrm_username": "vagrant",
     "winrm_password": "vagrant",
     "winrm_port": "55985",
-    "winrm_timeout": "5h",
+    "winrm_timeout": "10h",
     "guest_additions_mode": "disable",
     "shutdown_command": "C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /unattend:C:/Windows/Panther/Unattend/unattend.xml /quiet /shutdown",
-    "shutdown_timeout": "15m",
+    "shutdown_timeout": "4h",
     "floppy_files": [
       "answer_files/2012_r2/Autounattend.xml",
       "scripts/postunattend.xml",
