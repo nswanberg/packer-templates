@@ -17,8 +17,9 @@ if(Test-Path "C:\Users\vagrant\VBoxGuestAdditions.iso") {
     Remove-Item C:\Windows\Temp\VBoxGuestAdditions.iso -Force
 }
 
-Write-Host "Cleaning SxS..."
-Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+#not concerned about cleaning
+#Write-Host "Cleaning SxS..."
+#Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
 
 @(
     "$env:localappdata\Nuget",
@@ -33,41 +34,44 @@ Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
             try {
               Takeown /d Y /R /f $_
               Icacls $_ /GRANT:r administrators:F /T /c /q  2>&1 | Out-Null
-              Remove-Item $_ -Recurse -Force | Out-Null 
+              Remove-Item $_ -Recurse -Force | Out-Null
             } catch { $global:error.RemoveAt(0) }
         }
     }
 
-Write-Host "defragging..."
-if (Test-Command -cmdname 'Optimize-Volume') {
-    Optimize-Volume -DriveLetter C
-    } else {
-    Defrag.exe c: /H
-}
+#Write-Host "defragging..."
+#if (Test-Command -cmdname 'Optimize-Volume') {
+#    Optimize-Volume -DriveLetter C
+#    } else {
+#    Defrag.exe c: /H
+#}
 
-Write-Host "0ing out empty space..."
-$FilePath="c:\zero.tmp"
-$Volume = Get-WmiObject win32_logicaldisk -filter "DeviceID='C:'"
-$ArraySize= 64kb
-$SpaceToLeave= $Volume.Size * 0.05
-$FileSize= $Volume.FreeSpace - $SpacetoLeave
-$ZeroArray= new-object byte[]($ArraySize)
- 
-$Stream= [io.File]::OpenWrite($FilePath)
-try {
-   $CurFileSize = 0
-    while($CurFileSize -lt $FileSize) {
-        $Stream.Write($ZeroArray,0, $ZeroArray.Length)
-        $CurFileSize +=$ZeroArray.Length
-    }
-}
-finally {
-    if($Stream) {
-        $Stream.Close()
-    }
-}
- 
-Del $FilePath
+#Write-Host "0ing out empty space..."
+#$FilePath="c:\zero.tmp"
+#$Volume = Get-WmiObject win32_logicaldisk -filter "DeviceID='C:'"
+#$ArraySize= 64kb
+#$SpaceToLeave= $Volume.Size * 0.05
+#$FileSize= $Volume.FreeSpace - $SpacetoLeave
+#$ZeroArray= new-object byte[]($ArraySize)
+#
+#$Stream= [io.File]::OpenWrite($FilePath)
+#try {
+#   $CurFileSize = 0
+#    while($CurFileSize -lt $FileSize) {
+#        $Stream.Write($ZeroArray,0, $ZeroArray.Length)
+#        $CurFileSize +=$ZeroArray.Length
+#    }
+#}
+#finally {
+#    if($Stream) {
+#        $Stream.Close()
+#    }
+#}
+
+#Del $FilePath
+
+#Install Windows roles
+Install-WindowsFeature –ConfigurationFilePath A:\DeploymentConfigTemplate.xml
 
 Write-Host "copying auto unattend file"
 mkdir C:\Windows\setup\scripts
@@ -75,10 +79,12 @@ copy-item a:\SetupComplete-2012.cmd C:\Windows\setup\scripts\SetupComplete.cmd -
 
 mkdir C:\Windows\Panther\Unattend
 copy-item a:\postunattend.xml C:\Windows\Panther\Unattend\unattend.xml
+copy-item a:\DeploymentConfigTemplate c:
 
-Write-Host "Recreate pagefile after sysprep"
-$System = GWMI Win32_ComputerSystem -EnableAllPrivileges
-if ($system -ne $null) {
-  $System.AutomaticManagedPagefile = $true
-  $System.Put()
-}
+#No defrag; didn't disable page file, so no need to reenable
+#Write-Host "Recreate pagefile after sysprep"
+#$System = GWMI Win32_ComputerSystem -EnableAllPrivileges
+#if ($system -ne $null) {
+#  $System.AutomaticManagedPagefile = $true
+#  $System.Put()
+#}
