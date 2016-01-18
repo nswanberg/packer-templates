@@ -79,7 +79,6 @@ copy-item a:\SetupComplete-2012.cmd C:\Windows\setup\scripts\SetupComplete.cmd -
 
 mkdir C:\Windows\Panther\Unattend
 copy-item a:\postunattend.xml C:\Windows\Panther\Unattend\unattend.xml
-copy-item a:\DeploymentConfigTemplate c:
 
 #No defrag; didn't disable page file, so no need to reenable
 #Write-Host "Recreate pagefile after sysprep"

@@ -93,7 +93,7 @@
     "core": "",
     "guest_additions_mode": "upload",
     "headless": "false",
-    "iso_checksum": "5e2ddcaecc91e80a8ce3ec7ae7838f8a3967ed7f",
+    "iso_checksum": "849734f37346385dac2c101e4aacba4626bb141c",
     "iso_url": "iso/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO"
   }
 }
